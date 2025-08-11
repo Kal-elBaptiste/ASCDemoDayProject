@@ -1,0 +1,61 @@
+/* Makes the Header, Main, and Footer stack on each other */
+body {
+    /*Child Element Placement */
+    display: flex;
+    flex-direction: column;
+
+    /*Color and Style*/
+    background-color: #385A7F;
+    color: white;
+}
+
+/* Holds website Name + Nav bar.. Do we even need a nav bar?? */
+header {
+    /*Child Element Placement */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+main {
+    /*Child Element Placement */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+footer {
+    /*Child Element Placement */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* Padding */
+    padding-top: 20px; /*Space between Footer and Main*/
+
+}
+
+nav {
+    display: flex;
+    justify-content: space-evenly;
+
+    width: 100vw;
+}
+
+/* Navigator Divs*/
+.nav-div {
+}
+
+/* Navigator Buttons*/
+.nav-button {
+    padding: 10px;
+    margin-bottom: 5px;
+
+    background-color: #4470AD;
+}
+
+/* Holds slider, color picker, etc. */
+#art-tools-div {
+    display: flex;
+    align-items: center;
+}

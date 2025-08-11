@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affirmation Color</title>
+    <link rel="icon" href="https://img.icons8.com/?size=100&id=12939&format=png&color=000000" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Code & Firebase -->
+    <script defer src="main.js"></script>
+    <script defer src="sketch.js"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyAqwjdkD-w40DgL46s-YedVH34GaLAq8SU",
+          authDomain: "asc-demo-day-project.firebaseapp.com",
+          projectId: "asc-demo-day-project",
+          storageBucket: "asc-demo-day-project.firebasestorage.app",
+          messagingSenderId: "308081758245",
+          appId: "1:308081758245:web:bb2189d93be40992c4afcc",
+          measurementId: "G-5P8L1R24YG"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>
+                Affirmation Color
+            </h1>
+        </div>
+        <nav>
+            <div class="nav-div">
+                <input id="nav-draw-button" class="nav-button" type="button" value="Draw">
+            </div>
+            <div class="nav-div">
+                <input id="nav-view-drawings-button" class="nav-button" type="button" value="View Drawings">
+
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div id="image-input-div">
+            <label for="imgUrl">Input image address</label>
+            <input id="imgUrl" type="url">
+            <input id="submit" type="button" value="Submit">
+        </div>
+
+        <!-- Holds Color picker and Paint sizeSlider-->
+        <div id="art-tools-div">
+
+        </div>
+
+    </main>
+    <footer>
+        <p>
+            Made by Misael Godinez, Derek Chen, and Kal-El Baptiste
+        </p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.8/lib/p5.min.js"></script>
+</body>
+</html>
