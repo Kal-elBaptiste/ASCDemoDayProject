@@ -105,6 +105,7 @@ saveButton.addEventListener('click', () => {
     }
 });
 
+// After submit button is clicked (external image link)
 submit.onclick = () => {
     // Reveals art tools 
     artToolsContainer.style.display = "flex";
@@ -136,7 +137,23 @@ submit.onclick = () => {
 
         // Draw when user clicks
         sketch.draw = () => {
+            /* 
+            I (Kal-El) think the if statement should be changed to thh
+            condition below to avoid unintentional canvas coloring by
+            the user.
+
+            if (sketch.mouseIsPressed && mouseX > 0 && mouse X < sketch.width && mouseY > 0 && mouseY < sketch.height)
+
+            "In 2D mode, mouseX keeps track of the mouse's position relative 
+            to the top-left corner of the canvas. For example, if the mouse 
+            is 50 pixels from the left edge of the canvas, then mouseX will 
+            be 50." - https://p5js.org/reference/p5/mouseX/
+            */
             if (sketch.mouseIsPressed) {
+                /*
+                The logic for having multiple brush shapes can be done 
+                here if we're still doing that.  - Kal-EL
+                */
                 sketch.stroke(brushColor);
                 sketch.strokeWeight(brushSize);
                 sketch.line(sketch.pmouseX, sketch.pmouseY, sketch.mouseX, sketch.mouseY);
