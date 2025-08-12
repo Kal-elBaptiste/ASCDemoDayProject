@@ -9,7 +9,7 @@
 
     <!-- Code & Firebase -->
     <script defer src="main.js"></script>
-    <script defer src="sketch.js"></script>
+
     <script type="module"> 
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
@@ -43,27 +43,18 @@
         </div>
         <nav>
             <div class="nav-div">
+                <a href="index.html">
                     <input id="nav-draw-button" class="nav-button" type="button" value="Draw">
+                </a>
             </div>
             
             <div class="nav-div">
-                <a href="onlineGallery.html">
                     <input id="nav-view-drawings-button" class="nav-button" type="button" value="View Drawings">
-                </a>
             </div>
         </nav>
     </header>
     <main>
-        <div id="image-input-div">
-            <label for="imgUrl">Input image address</label>
-            <input id="imgUrl" type="url">
-            <input id="submit" type="button" value="Submit">
-        </div>
 
-        <!-- Holds Color picker and Paint sizeSlider-->
-        <div id="art-tools-div">
-
-        </div>
 
     </main>
     <footer>
