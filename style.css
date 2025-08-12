@@ -1,5 +1,14 @@
-/* Makes the Header, Main, and Footer stack on each other */
+html{
+    /* Border */
+    border-style: solid;
+    border-color: aliceblue;
+    border-width: 3px;
+}
+
 body {
+
+    min-height: 100vh;
+
     /*Child Element Placement */
     display: flex;
     flex-direction: column;
@@ -58,4 +67,9 @@ nav {
 #art-tools-div {
     display: flex;
     align-items: center;
+}
+
+#image-input-div {
+    /* Child Element Placement */
+    display: flex;
 }

@@ -87,6 +87,11 @@ const affirmations = [
   const saveButton = document.createElement('button');
   saveButton.textContent = 'Save Drawing';
   artToolsContainer.appendChild(saveButton);
+
+  // Eraser button
+  const eraseButton = document.createElement('button');
+  eraseButton.textContent = 'Eraser [PlaceHolder]';
+  artToolsContainer.appendChild(eraseButton);
   
   // Button Responsivness
   colorPicker.addEventListener('input', () => {
@@ -110,6 +115,7 @@ const affirmations = [
   submit.onclick = () => {
       // Reveals art tools 
       artToolsContainer.style.display = "flex";
+      artToolsContainer.style.flexWrap = "wrap";
       const randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
   
       // Removes p5 instance if already exists
@@ -119,7 +125,7 @@ const affirmations = [
   
       // Creates p5 instance, canvas, and functions
       p5Instance = new p5((sketch) => {
-          // Prelloads user image 
+          // Preloads user image 
           sketch.preload = () => {
               loadedImg = sketch.loadImage(imgUrl.value);
           };
@@ -138,32 +144,22 @@ const affirmations = [
   
           // Draw when user clicks
           sketch.draw = () => {
-              /* 
-              I (Kal-El) think the if statement should be changed to thh
-              condition below to avoid unintentional canvas coloring by
-              the user.
-  
-              if (sketch.mouseIsPressed && mouseX > 0 && mouse X < sketch.width && mouseY > 0 && mouseY < sketch.height)
-  
-              "In 2D mode, mouseX keeps track of the mouse's position relative 
-              to the top-left corner of the canvas. For example, if the mouse 
-              is 50 pixels from the left edge of the canvas, then mouseX will 
-              be 50." - https://p5js.org/reference/p5/mouseX/
-              */
-              if (sketch.mouseIsPressed) {
-                  /*
-                  The logic for having multiple brush shapes can be done 
-                  here if we're still doing that.  - Kal-EL
-                  */
-                  sketch.stroke(brushColor);
-                  sketch.strokeWeight(brushSize);
-                  sketch.line(sketch.pmouseX, sketch.pmouseY, sketch.mouseX, sketch.mouseY);
-              }
+            if (
+                sketch.mouseIsPressed &&
+                sketch.mouseX > 0 &&
+                sketch.mouseX < sketch.width &&
+                sketch.mouseY > 100 &&
+                sketch.mouseY < sketch.height
+              ) {
+                    sketch.stroke(brushColor);
+                    sketch.strokeWeight(brushSize);
+                    sketch.line(sketch.pmouseX, sketch.pmouseY, sketch.mouseX, sketch.mouseY);
+                }
           };
   
           // Saves canvas to image file
           sketch.saveDrawing = () => {
-              sketch.saveCanvas(canvas, affirmations, 'png');
+              sketch.saveCanvas(canvas, randomAffirmation, 'png');
           }
       });
   };
