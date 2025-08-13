@@ -52,7 +52,12 @@ const affirmations = [
 
   // Canvas flag
   let imageCanvas = false;
-  
+
+  let mouseInCanvas = false;
+
+  // Draw/Erase state
+  let erase = false;
+
   // default brush settings
   let p5Instance;
   let canvas;
@@ -150,11 +155,11 @@ function canvasDraw(event){
 
         // Change logic based on what called the p5 canvas
         switch (event.target.id) {
-            case "submit":
+            case "submit": // submit button
                 imageCanvas = true;
                 break;
 
-            case "canvas-color-input":
+            case "canvas-color-input": // canvas color button
                 imageCanvas = false;
                 break;
         }
@@ -191,12 +196,22 @@ function canvasDraw(event){
                 sketch.image(loadedImg, 0, 100);
             }
             else { // plain color canvas
-                canvas = sketch.createCanvas(474, 416);
-                console.log("canvasColorPicker.value: " + canvasColorPicker.value);
-                sketch.background(canvasColorPicker.value);
+                if (window.innerWidth > 500){
+                    canvas = sketch.createCanvas(500, 416);
+                    console.log("canvasColorPicker.value: " + canvasColorPicker.value);
+                    sketch.background(canvasColorPicker.value);
+                    sketch.fill(255, 255, 255);
+                    sketch.rect(0, 0, 500, 100);
+                }
+                else { // mobile canvas shrink
+                    canvas = sketch.createCanvas(window.innerWidth, 416);
+                    console.log("canvasColorPicker.value: " + canvasColorPicker.value);
+                    sketch.background(canvasColorPicker.value);
+                    sketch.fill(255, 255, 255);
+                    sketch.rect(0, 0, window.innerWidth, 100);
+                }
                 // White bar at top for affirmation
-                sketch.fill(255, 255, 255);
-                sketch.rect(0, 0, 476, 100);
+
             }
 
             // Prevents scrolling while drawing (mobile)
@@ -213,18 +228,42 @@ function canvasDraw(event){
 
         // Draw when user clicks
         sketch.draw = () => {
-          if (
-              sketch.mouseIsPressed &&
-              sketch.mouseX > 0 &&
-              sketch.mouseX < sketch.width &&
-              sketch.mouseY > 100 &&
-              sketch.mouseY < sketch.height
-            ) {
-                  sketch.stroke(brushColor);
-                  sketch.strokeWeight(brushSize);
-                  sketch.line(sketch.pmouseX, sketch.pmouseY, sketch.mouseX, sketch.mouseY);
-              }
+
+            // When the mouse is OVER the canvas
+            canvas.mouseOver(() => {
+                mouseInCanvas = true;
+            })
+            // When the mouse moves OUT the canvas
+            canvas.mouseOut(() => {
+                mouseInCanvas = false;
+            })
+
+            console.log(mouseInCanvas);
+
+            if (sketch.mouseIsPressed && mouseInCanvas) {
+                    sketch.stroke(brushColor);
+                    sketch.strokeWeight(brushSize);
+                    sketch.line(sketch.pmouseX, sketch.pmouseY, sketch.mouseX, sketch.mouseY);
+                }
         };
+
+        sketch.mousePressed = () => {
+            console.log("MOUSE IS PRESSED");
+            if (
+                sketch.mouseIsPressed &&
+                sketch.mouseX > 0 &&
+                sketch.mouseX < sketch.width &&
+                sketch.mouseY > 100 &&
+                sketch.mouseY < sketch.height
+              ) {
+                    mouseInCanvas = true;
+                }
+
+            // DEBUG
+            console.log(mouseInCanvas);
+            console.log("MouseY: " + sketch.mouseY);
+            console.log("MouseY: " + sketch.mouseY);
+        }
 
         // Saves canvas to image file
         sketch.saveDrawing = () => {

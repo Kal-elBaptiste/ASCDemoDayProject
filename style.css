@@ -83,6 +83,12 @@ input[type=button] {
     background-color: #C76C98;
 }
 
+#imageGallery {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 /* shrinks gallery images for mobile */
 #imageGallery img{
     max-width: 98vw;
