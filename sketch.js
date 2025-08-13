@@ -127,7 +127,23 @@ const affirmations = [
       p5Instance = new p5((sketch) => {
           // Preloads user image 
           sketch.preload = () => {
-              loadedImg = sketch.loadImage(imgUrl.value);
+            loadedImg = sketch.loadImage(imgUrl.value, img => {
+            /* 
+            Shrinks image width for longer
+            devices like phones. Image aspect 
+            ratio is kept - Kal-el
+            */
+            loadedImg.resize(window.innerWidth, 0); // resize before drawing
+            if (loadedImg.width > 474){
+              /*
+              Passing 0 maintains aspect ratio. It
+              does not shrink the image - Kal-el
+              https://p5js.org/reference/p5.Image/resize/
+              */
+              loadedImg.resize(474, 0); 
+              }
+            });
+
           };
   
           // Creates canvas with image and affirmation

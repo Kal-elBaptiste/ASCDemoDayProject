@@ -1,8 +1,15 @@
+/*
+Color pallet link:
+afterhttp://www.color-hex.com/palettes/37363.png
+*/
+
 html{
     /* Border */
     border-style: solid;
-    border-color: aliceblue;
+    border-color: #291037;
     border-width: 3px;
+
+    overflow-x: hidden; /* stop horizontal stretch */
 }
 
 body {
@@ -14,30 +21,34 @@ body {
     flex-direction: column;
 
     /*Color and Style*/
-    background-color: #385A7F;
-    color: white;
+    background-color: #642C6D;
+    color: #FBC3A2;
 }
 
 /* Holds website Name + Nav bar.. Do we even need a nav bar?? */
 header {
-    /*Child Element Placement */
+    /* Child Element Placement */
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    /* Sizing */
+    margin-bottom: 5px;
 }
 
 main {
-    /*Child Element Placement */
+    /* Child Element Placement */
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
 footer {
-    /*Child Element Placement */
+    /* Child Element Placement */
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
 
     /* Padding */
     padding-top: 20px; /*Space between Footer and Main*/
@@ -45,10 +56,23 @@ footer {
 }
 
 nav {
+    /* Child Element Placement */
     display: flex;
     justify-content: space-evenly;
 
+    max-width: 500px;
     width: 100vw;
+}
+
+input[type=button] {
+    /* Border */
+    border-style: solid;
+    border-color: #291037;
+    border-width: 3px;
+
+    /* Text */
+    font-weight: bold;
+    color:#291037;
 }
 
 /* Navigator Divs > CLASS CURRENTLY NOT USED */
@@ -60,7 +84,11 @@ nav {
     padding: 10px;
     margin-bottom: 5px;
 
-    background-color: #4470AD;
+    background-color: #C76C98;
+}
+
+#imageGallery img{
+    max-width: 98vw;
 }
 
 /* Holds slider, color picker, etc. */
@@ -72,4 +100,6 @@ nav {
 #image-input-div {
     /* Child Element Placement */
     display: flex;
+    gap: 3px
+    
 }
