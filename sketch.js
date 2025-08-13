@@ -49,6 +49,9 @@ const affirmations = [
   // User inserted image
   const imgUrl = document.getElementById("imgUrl");
   const submit = document.getElementById("submit");
+
+  // Canvas flag
+  let imageCanvas = false;
   
   // default brush settings
   let p5Instance;
@@ -57,7 +60,7 @@ const affirmations = [
   let brushColor = '#000000';
   let brushSize = 4;
   
-  // Holds slider, color picker, etc.
+  // Holds slider, brush color picker, etc.
   const artToolsContainer = document.getElementById("art-tools-div");
   artToolsContainer.style.display = "none";
   
@@ -66,6 +69,9 @@ const affirmations = [
   colorPicker.type = 'color';
   colorPicker.value = brushColor;
   artToolsContainer.appendChild(colorPicker);
+
+  // Canvas color picker
+  const canvasColorPicker = document.getElementById('canvas-color-input');
   
   // Brush size slider
   const sizeSlider = document.createElement('input');
@@ -88,7 +94,7 @@ const affirmations = [
   saveButton.textContent = 'Save Drawing';
   artToolsContainer.appendChild(saveButton);
 
-  // Eraser button
+  // Eraser button > Testing - Kal-el
   const eraseButton = document.createElement('button');
   eraseButton.textContent = 'Eraser [PlaceHolder]';
   artToolsContainer.appendChild(eraseButton);
@@ -110,75 +116,119 @@ const affirmations = [
           p5Instance.saveDrawing();
       }
   });
-  
+
+  canvasColorPicker.addEventListener('input', () => {
+    
+  })
+
+/*
+The Submit button AND canvas color button can
+trigger a new canvas now (and other things) - Kal-el
+*/
+submit.onclick = canvasDraw;
+canvasColorPicker.onchange = canvasDraw;
+
+/* 
+Canvas and art tools are now a reuseable function
+Sorry for the bad function name - Kal-el
+*/
+function canvasDraw(event){
+
   // After submit button is clicked (external image link)
-  submit.onclick = () => {
-      // Reveals art tools 
-      artToolsContainer.style.display = "flex";
-      artToolsContainer.style.flexWrap = "wrap";
-      const randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
-  
-      // Removes p5 instance if already exists
-      if (p5Instance) {
-          p5Instance.remove();
-      }
-  
-      // Creates p5 instance, canvas, and functions
-      p5Instance = new p5((sketch) => {
-          // Preloads user image 
-          sketch.preload = () => {
-            loadedImg = sketch.loadImage(imgUrl.value, img => {
-            /* 
-            Shrinks image width for longer
-            devices like phones. Image aspect 
-            ratio is kept - Kal-el
-            */
-            loadedImg.resize(window.innerWidth, 0); // resize before drawing
-            if (loadedImg.width > 474){
-              /*
-              Passing 0 maintains aspect ratio. It
-              does not shrink the image - Kal-el
-              https://p5js.org/reference/p5.Image/resize/
-              */
-              loadedImg.resize(474, 0); 
-              }
+    // Reveals art tools 
+    artToolsContainer.style.display = "flex";
+    artToolsContainer.style.flexWrap = "wrap";
+    const randomAffirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
+
+    // Removes p5 instance if already exists
+    if (p5Instance) {
+        p5Instance.remove();
+    }
+
+    // Creates p5 instance, canvas, and functions
+    p5Instance = new p5((sketch) => {
+
+        // Change logic based on what called the p5 canvas
+        switch (event.target.id) {
+            case "submit":
+                imageCanvas = true;
+                break;
+
+            case "canvas-color-input":
+                imageCanvas = false;
+                break;
+        }
+
+        if (imageCanvas){
+            // Preloads user image 
+            sketch.preload = () => {
+                loadedImg = sketch.loadImage(imgUrl.value, img => {
+                /* 
+                Shrinks image width for longer
+                devices like phones. Image aspect 
+                ratio is kept - Kal-el
+                */
+                loadedImg.resize(window.innerWidth, 0); // resize before drawing
+                if (loadedImg.width > 474){
+                /*
+                Passing 0 maintains aspect ratio. It
+                does not shrink the image - Kal-el
+                https://p5js.org/reference/p5.Image/resize/
+                */
+                loadedImg.resize(474, 0); 
+                }
+                });
+    
+            };
+        }
+
+        // Creates canvas with image and affirmation
+        sketch.setup = () => {
+
+            if (imageCanvas){ // image canvas
+                canvas = sketch.createCanvas(loadedImg.width, loadedImg.height + 100);
+                sketch.background(255);
+                sketch.image(loadedImg, 0, 100);
+            }
+            else { // plain color canvas
+                canvas = sketch.createCanvas(474, 416);
+                console.log("canvasColorPicker.value: " + canvasColorPicker.value);
+                sketch.background(canvasColorPicker.value);
+                // White bar at top for affirmation
+                sketch.fill(255, 255, 255);
+                sketch.rect(0, 0, 476, 100);
+            }
+
+            // Prevents scrolling while drawing (mobile)
+            canvas.elt.addEventListener('touchmove', function(event) {
+                event.preventDefault();
             });
 
-          };
-  
-          // Creates canvas with image and affirmation
-          sketch.setup = () => {
-              canvas = sketch.createCanvas(loadedImg.width, loadedImg.height + 100);
-              canvas.elt.addEventListener('touchmove', function(event) {
-                event.preventDefault();
-              });
-              sketch.background(255);
-              sketch.textAlign(sketch.CENTER);
-              sketch.textSize(24);
-              sketch.textWrap(sketch.WORD);
-              sketch.fill(0);
-              sketch.text(randomAffirmation, 0, 10, sketch.width - 40);
-              sketch.image(loadedImg, 0, 100);
-          };
-  
-          // Draw when user clicks
-          sketch.draw = () => {
-            if (
-                sketch.mouseIsPressed &&
-                sketch.mouseX > 0 &&
-                sketch.mouseX < sketch.width &&
-                sketch.mouseY > 100 &&
-                sketch.mouseY < sketch.height
-              ) {
-                    sketch.stroke(brushColor);
-                    sketch.strokeWeight(brushSize);
-                    sketch.line(sketch.pmouseX, sketch.pmouseY, sketch.mouseX, sketch.mouseY);
-                }
-          };
-  
-          // Saves canvas to image file
-          sketch.saveDrawing = () => {
-              sketch.saveCanvas(canvas, randomAffirmation, 'png');
-          }
-      });
-  };
+            sketch.textAlign(sketch.CENTER);
+            sketch.textSize(24);
+            sketch.textWrap(sketch.WORD);
+            sketch.fill(0);
+            sketch.text(randomAffirmation, 0, 10, sketch.width - 40);
+        };
+
+        // Draw when user clicks
+        sketch.draw = () => {
+          if (
+              sketch.mouseIsPressed &&
+              sketch.mouseX > 0 &&
+              sketch.mouseX < sketch.width &&
+              sketch.mouseY > 100 &&
+              sketch.mouseY < sketch.height
+            ) {
+                  sketch.stroke(brushColor);
+                  sketch.strokeWeight(brushSize);
+                  sketch.line(sketch.pmouseX, sketch.pmouseY, sketch.mouseX, sketch.mouseY);
+              }
+        };
+
+        // Saves canvas to image file
+        sketch.saveDrawing = () => {
+            sketch.saveCanvas(canvas, randomAffirmation, 'png');
+        }
+    });
+};

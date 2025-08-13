@@ -75,10 +75,6 @@ input[type=button] {
     color:#291037;
 }
 
-/* Navigator Divs > CLASS CURRENTLY NOT USED */
-.nav-div {
-}
-
 /* Navigator Buttons*/
 .nav-button {
     padding: 10px;
@@ -87,6 +83,7 @@ input[type=button] {
     background-color: #C76C98;
 }
 
+/* shrinks gallery images for mobile */
 #imageGallery img{
     max-width: 98vw;
 }
@@ -100,6 +97,15 @@ input[type=button] {
 #image-input-div {
     /* Child Element Placement */
     display: flex;
-    gap: 3px
-    
+    align-items: center;
+    text-align: center;
+    gap: 3%;
+}
+
+/* Canvas color button & label positioning */
+#canvas-color-div {
+    /* Child Element Placement */
+    display: flex;
+    align-items: center;
+    gap: 10px
 }
