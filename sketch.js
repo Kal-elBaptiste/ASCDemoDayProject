@@ -149,6 +149,9 @@ const affirmations = [
           // Creates canvas with image and affirmation
           sketch.setup = () => {
               canvas = sketch.createCanvas(loadedImg.width, loadedImg.height + 100);
+              canvas.elt.addEventListener('touchmove', function(event) {
+                event.preventDefault();
+              });
               sketch.background(255);
               sketch.textAlign(sketch.CENTER);
               sketch.textSize(24);
