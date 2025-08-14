@@ -378,8 +378,14 @@ function canvasDraw(event) {
         strokes.push(shapes.map(line => ({ ...line })));
         shapes = [];
       }
-
     };
+
+    /* mouseReleased doesn't trigger when a the user
+    takes their finger off the device, touchEnded does.
+    
+    Due to this, we run the mouseReleased code when 
+    touchEnded is triggered for the same effect :D */
+    sketch.touchEnded = sketch.mouseReleased;
 
     // Saves canvas to image file
     sketch.saveDrawing = () => {
