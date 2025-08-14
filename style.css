@@ -83,6 +83,18 @@ input[type=button] {
     background-color: #C76C98;
 }
 
+#website-name-and-logo-div {
+    /* Child Element Placement */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    /* Sizing */
+    width: 500px;
+    max-width: 100vw;
+}
+
 #imageGallery {
     /* Child Element Placement */
     display: flex;

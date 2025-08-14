@@ -18,9 +18,6 @@ else {
     window.removeEventListener('beforeunload', preventRefresh);
 }
 
-
-
-
 //                     [Local Storage Code]
 // Only runs when on index.html
 if (inHomePage) {

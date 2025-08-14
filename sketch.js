@@ -62,7 +62,7 @@ let discardedStrokes = [];
 let shapes = [];
 
 // Draw/Erase state
-let erase = false;
+let isErasing = false;
 
 // default brush settings
 let p5Instance;
@@ -141,6 +141,10 @@ saveButton.addEventListener("click", () => {
     p5Instance.saveDrawing();
   }
 });
+
+eraseButton.addEventListener("click", () => {
+  isErasing = !isErasing;
+})
 
 undoButton.addEventListener("click", () => {
     // DEBUG
@@ -284,21 +288,22 @@ function canvasDraw(event) {
         event.preventDefault();
       });
     };
+
     sketch.draw = () => {
         // 1️⃣ Clear/redraw background or image
         if (imageCanvas && loadedImg) {
           sketch.background(255);
           sketch.image(loadedImg, 0, 100);
         } else {
-          sketch.noStroke(); 
-          /* "noStroke" revents paint brush thickness from affecting 
-          the rect and text elements.*/
           sketch.background(canvasColorPicker.value);
-          sketch.fill(255);
-          sketch.rect(0, 0, sketch.width, 100); // White bar for affirmation
-          // 2️⃣ Draw affirmation text
-          sketch.drawAffirmation();
         }
+
+        // DISPLAYS WHITE RECT AND AFFIRMATION TEXT
+        sketch.noStroke();         /* "noStroke" revents paint brush thickness from affecting the rect and text elements.*/
+        sketch.fill(255);
+        sketch.rect(0, 0, sketch.width, 100); // White bar for affirmation
+        // 2️⃣ Draw affirmation text
+        sketch.drawAffirmation();
       
 
       
