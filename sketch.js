@@ -57,6 +57,8 @@ let imageCanvas = false;
 let mouseInCanvas = false;
 
 // Stores user's draw strokes
+let strokes = [];
+let discardedStrokes = [];
 let shapes = [];
 
 // Draw/Erase state
@@ -70,14 +72,18 @@ let brushColor = "#000000";
 let brushSize = 4;
 
 // Holds slider, brush color picker, etc.
-const artToolsContainer = document.getElementById("art-tools-div");
-artToolsContainer.style.display = "none";
+const artToolsContainer1 = document.getElementById("art-tools-line-1");
+// Holds eraser, undo, redo, and more
+const artToolsContainer2 = document.getElementById("art-tools-line-2");
+artToolsContainer1.style.display = "none";
+artToolsContainer2.style.display = "none";
 
 // Brush color picker
 const colorPicker = document.createElement("input");
 colorPicker.type = "color";
+colorPicker.innerText = "Brush color";
 colorPicker.value = brushColor;
-artToolsContainer.appendChild(colorPicker);
+artToolsContainer1.appendChild(colorPicker);
 
 // Canvas color picker
 const canvasColorPicker = document.getElementById("canvas-color-input");
@@ -88,7 +94,7 @@ sizeSlider.type = "range";
 sizeSlider.min = 1;
 sizeSlider.max = 25;
 sizeSlider.value = brushSize;
-artToolsContainer.appendChild(sizeSlider);
+artToolsContainer1.appendChild(sizeSlider);
 
 // Brush Preview
 const brushPreview = document.createElement("div");
@@ -96,17 +102,27 @@ brushPreview.style.borderRadius = "50%";
 brushPreview.style.background = brushColor;
 brushPreview.style.width = brushSize + "px";
 brushPreview.style.height = brushSize + "px";
-artToolsContainer.appendChild(brushPreview);
+artToolsContainer1.appendChild(brushPreview);
 
 // Save button
 const saveButton = document.createElement("button");
-saveButton.textContent = "Save Drawing";
-artToolsContainer.appendChild(saveButton);
+saveButton.textContent = "Download Drawing";
+artToolsContainer1.appendChild(saveButton);
 
 // Eraser button > Testing - Kal-el
 const eraseButton = document.createElement("button");
-eraseButton.textContent = "Eraser [PlaceHolder]";
-artToolsContainer.appendChild(eraseButton);
+eraseButton.textContent = "Eraser";
+artToolsContainer2.appendChild(eraseButton);
+
+// undo button > Testing - Kal-el
+const undoButton = document.createElement("button");
+undoButton.textContent = "Undo";
+artToolsContainer2.appendChild(undoButton);
+
+// redo button > Testing - Kal-el
+const redoButton = document.createElement("button");
+redoButton.textContent = "Redo";
+artToolsContainer2.appendChild(redoButton);
 
 // Button Responsivness
 colorPicker.addEventListener("input", () => {
@@ -126,6 +142,33 @@ saveButton.addEventListener("click", () => {
   }
 });
 
+undoButton.addEventListener("click", () => {
+    // DEBUG
+    console.log("UNDO BUTTON PRESSED");
+    console.log("discardedStrokes BEFORE: " + JSON.stringify(discardedStrokes));
+    console.log("strokes BEFORE: " + JSON.stringify(strokes));
+    console.log("strokes length BEFORE: " + strokes.length);
+
+    if (strokes.length > 0){ // prevents crash when undoing strokes that dont exist
+        discardedStrokes.push(strokes[strokes.length - 1]);
+        strokes.pop();
+    }
+
+    // DEBUG
+    console.log("discardedStrokes AFTER: " + JSON.stringify(discardedStrokes));
+    console.log("strokes AFTER: " + JSON.stringify(strokes));
+    console.log("strokes length AFTER: " + strokes.length);
+
+})
+
+redoButton.addEventListener("click", () => {
+    if (discardedStrokes.length > 0) { // prevents crash when redoing strokes that dont exist
+        strokes.push(discardedStrokes[discardedStrokes.length - 1]);
+        discardedStrokes.pop();
+    }
+
+})
+
 canvasColorPicker.addEventListener("input", () => {});
 
 /*
@@ -142,8 +185,12 @@ Sorry for the bad function name - Kal-el
 function canvasDraw(event) {
   // After submit button is clicked (external image link)
   // Reveals art tools
-  artToolsContainer.style.display = "flex";
-  artToolsContainer.style.flexWrap = "wrap";
+  artToolsContainer1.style.display = "flex";
+  artToolsContainer1.style.flexWrap = "wrap";
+  artToolsContainer2.style.display = "flex";
+  artToolsContainer2.style.flexWrap = "wrap";
+
+  // Gets random affirmation
   const randomAffirmation =
     affirmations[Math.floor(Math.random() * affirmations.length)];
 
@@ -164,6 +211,16 @@ function canvasDraw(event) {
         imageCanvas = false;
         break;
     }
+
+    // draws affirmation inside white rectangle
+    sketch.drawAffirmation = () => {
+        sketch.noStroke();
+        sketch.textAlign(sketch.CENTER);
+        sketch.textSize(24);
+        sketch.textWrap(sketch.WORD);
+        sketch.fill(0);
+        sketch.text(randomAffirmation, 0, 10, sketch.width - 40);
+    };
 
     if (imageCanvas) {
       // Preloads user image
@@ -226,52 +283,70 @@ function canvasDraw(event) {
       canvas.elt.addEventListener("touchmove", function (event) {
         event.preventDefault();
       });
-
-      // Canvas Text Area
-      sketch.textAlign(sketch.CENTER);
-      sketch.textSize(24);
-      sketch.textWrap(sketch.WORD);
-      sketch.fill(0);
-      sketch.text(randomAffirmation, 0, 10, sketch.width - 40);
     };
-
-    // Draw when user clicks
     sketch.draw = () => {
-      if (
-        sketch.mouseIsPressed &&
-        sketch.mouseX > 0 &&
-        sketch.mouseX < sketch.width &&
-        sketch.mouseY > 100 &&
-        sketch.mouseY < sketch.height
-      ) {
-        sketch.stroke(brushColor);
-        sketch.strokeWeight(brushSize);
-        sketch.line(
-          sketch.pmouseX,
-          sketch.pmouseY,
-          sketch.mouseX,
-          sketch.mouseY
-        );
-
-        // UNDO/REDO LOGIC [EXPERIMENTAL]
-        let newCircle = {
-          x: sketch.mouseX,
-          y: sketch.mouseY,
-          px: sketch.pmouseX,
-          py: sketch.pmouseY,
-        };
-        /*
-        for (let i = 0; i < shapes.length; i++) {
-          sketch.stroke(brushColor);
-          sketch.strokeWeight(brushSize);
-          line(shapes[i]);
+        // 1️⃣ Clear/redraw background or image
+        if (imageCanvas && loadedImg) {
+          sketch.background(255);
+          sketch.image(loadedImg, 0, 100);
+        } else {
+          sketch.noStroke(); 
+          /* "noStroke" revents paint brush thickness from affecting 
+          the rect and text elements.*/
+          sketch.background(canvasColorPicker.value);
+          sketch.fill(255);
+          sketch.rect(0, 0, sketch.width, 100); // White bar for affirmation
+          // 2️⃣ Draw affirmation text
+          sketch.drawAffirmation();
         }
-          */
+      
 
-        shapes.push(newCircle);
-        console.log(shapes);
-      }
-    };
+      
+        // 3️⃣ Draw all previous strokes
+        for (let i = 0; i < strokes.length; i++) {
+          let strokeArr = strokes[i];
+          for (let j = 0; j < strokeArr.length; j++) {
+            let line = strokeArr[j];
+            sketch.stroke(line.stroke);
+            sketch.strokeWeight(line.strokeWeight);
+            if (line.shape === "line") {
+              sketch.line(line.px, line.py, line.x, line.y);
+            }
+          }
+        }
+      
+        // 4️⃣ If mouse is pressed, draw new shapes
+        if (
+          sketch.mouseIsPressed &&
+          sketch.mouseX > 0 &&
+          sketch.mouseX < sketch.width &&
+          sketch.mouseY > 100 &&
+          sketch.mouseY < sketch.height
+        ) {
+          // Create a new line segment
+          let newLine = {
+            x: sketch.mouseX,
+            y: sketch.mouseY,
+            px: sketch.pmouseX,
+            py: sketch.pmouseY,
+            stroke: brushColor,
+            strokeWeight: brushSize,
+            shape: "line",
+          };
+          shapes.push(newLine);
+      
+          // Draw current shapes as you draw
+          for (let i = 0; i < shapes.length; i++) {
+            let shape = shapes[i];
+            sketch.stroke(shape.stroke);
+            sketch.strokeWeight(shape.strokeWeight);
+            if (shape.shape === "line") {
+              sketch.line(shape.px, shape.py, shape.x, shape.y);
+            }
+          }
+        }
+      };
+      
 
     sketch.mousePressed = () => {
       console.log("MOUSE IS PRESSED");
@@ -289,6 +364,21 @@ function canvasDraw(event) {
       console.log(mouseInCanvas);
       console.log("MouseY: " + sketch.mouseY);
       console.log("MouseY: " + sketch.mouseY);
+    };
+
+    sketch.mouseReleased = () => {
+      console.log("MOUSE RELEASED");
+      // Push a new array of copies of each line object
+      /*
+      To be 100000% honest, I have no idea how that .map
+      line works. I've asked chatGPT to explain it to me like
+      6 time and I'm.. I'm at the end of the line here. 
+      */
+      if (shapes.length > 0) {
+        strokes.push(shapes.map(line => ({ ...line })));
+        shapes = [];
+      }
+
     };
 
     // Saves canvas to image file

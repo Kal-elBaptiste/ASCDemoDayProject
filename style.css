@@ -84,6 +84,7 @@ input[type=button] {
 }
 
 #imageGallery {
+    /* Child Element Placement */
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -96,8 +97,38 @@ input[type=button] {
 
 /* Holds slider, color picker, etc. */
 #art-tools-div {
+    /* Child Element Placement */
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
+}
+
+#art-tools-div div{
+    /* Child Element Placement */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#art-tools-line-2 {
+    /* Child Element Placement */
+    display: flex;
+    justify-content: space-evenly;
+
+    /* Sizing */
+    width: 100vw;
+    max-width: 500px;
+
+    /* Spacing */
+    margin: 10px
+
+}
+
+/* Eraser, undo, redo */
+#art-tools-line-2 button {
+    flex: 1; /* each button gets equal share */
+    margin: 0 5px; /* small spacing */
 }
 
 #image-input-div {
